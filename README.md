@@ -46,6 +46,6 @@ Get it from:
 
 Pull using `ghcr.io/fst777/toybox:latest`.
 
-What it says on the tin, combined with FreeBSD's own `/bin/sh` since FreeBSD's
-toybox build does not include this. Usable as a minimal userland container,
-suitable for hosting apps/scripts that require core shell utilities.
+What it says on the tin, combined with FreeBSD's own `/bin/sh` since toybox
+does not include this. Usable as a minimal userland container, suitable for
+hosting apps/scripts that require core shell utilities.
