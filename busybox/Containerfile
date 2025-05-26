@@ -1,0 +1,28 @@
+FROM runtime-pkg AS builder
+
+RUN <<EOF
+  pkg install -y busybox FreeBSD-utilities
+
+  mkdir -p /tmp/root/etc /tmp/root/bin /tmp/root/libexec /tmp/root/var/run /tmp/root/usr/bin /tmp/root/root
+  cp /etc/passwd /etc/master.passwd /etc/group /tmp/root/etc
+  cp $(which busybox) /tmp/root/bin
+  cp /libexec/ld-elf.* /tmp/root/libexec
+  cp /var/run/ld-elf.so.hints /tmp/root/var/run
+  for lib in $(ldd -f '%p\n' -f '' /tmp/root/bin/busybox); do
+      mkdir -p "/tmp/root$(dirname "${lib}")"
+      cp "${lib}" "/tmp/root$(dirname "${lib}")"
+  done
+  
+  for applet in $(/tmp/root/bin/busybox --list); do
+      ln -s busybox "/tmp/root/bin/${applet}"
+  done
+  ln -s ../../bin/env /tmp/root/usr/bin/env
+EOF
+
+
+FROM scratch
+LABEL maintainer="Frans-Jan van Steenbeek <frans-jan@van-steenbeek.net>"
+
+COPY --from=builder /tmp/root/ /
+
+CMD ["sh"]

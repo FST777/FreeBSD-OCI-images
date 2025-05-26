@@ -1,0 +1,16 @@
+FROM docker.io/freebsd/freebsd-runtime:14.2 AS builder
+
+RUN <<EOF
+  mv /usr/local/etc/pkg/repos/base.conf /usr/local/etc/pkg/repos/base.back
+  pkg upgrade -y
+  mv /usr/local/etc/pkg/repos/base.back /usr/local/etc/pkg/repos/base.conf
+  rm -rf /var/db/pkg/repos /usr/local/sbin/pkg-static
+EOF
+
+
+FROM scratch
+LABEL maintainer="Frans-Jan van Steenbeek <frans-jan@van-steenbeek.net>"
+
+COPY --from=builder / /
+
+CMD ["sh"]
