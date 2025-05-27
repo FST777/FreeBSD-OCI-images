@@ -1,0 +1,21 @@
+name: Publish container images
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build and push images
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Investigate
+      run: |
+        env
+        ip a
+        podman version
+        netstat -tulpen
