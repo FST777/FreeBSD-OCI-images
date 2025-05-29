@@ -46,7 +46,7 @@ jobs:
       - name: Create manifest
         run: |
           buildah manifest create runtime-pkg:latest oci-archive:runtime-pkg.x86-64.tar oci-archive:runtime-pkg.arm64.tar
-          buildah tag runtime-pkg:latest runtime-pkg:14.2 runtime-pkg:14.2-RELEASE-p3
+          buildah tag runtime-pkg:latest runtime-pkg:14.2 runtime-pkg:14.2-p3
 
       - name: Registry owner to lowercase
         env:
@@ -58,7 +58,7 @@ jobs:
         uses: redhat-actions/push-to-registry@v2
         with:
           image: runtime-pkg
-          tags: latest 14.2 14.2-RELEASE-p3
+          tags: latest 14.2 14.2-p3
           registry: ghcr.io/{{ env.GHOWNER_LC }}
           username: ${{ github.actor }}
           password: ${{ github.token }}
