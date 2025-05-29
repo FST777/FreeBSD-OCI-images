@@ -8,4 +8,5 @@ service pf start
 sysctl net.inet.ip.forwarding=1
 sysctl net.pf.filter_local=1
 mkdir -p /usr/local/etc/cni/net.d/
-cp podman-bridge.conflist /usr/local/etc/cni/net.d
+cp build-assets/podman-bridge.conflist /usr/local/etc/cni/net.d/
+sed -i '' -e 's/driver = "zfs"/driver = "vfs"/' /usr/local/etc/containers/storage.conf
