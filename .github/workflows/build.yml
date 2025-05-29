@@ -32,6 +32,7 @@ jobs:
         with:
           name: runtime-pkg.${{ matrix.architecture }}
           path: runtime-pkg.${{ matrix.architecture }}.tar
+          retention-days: 1
 
   upload:
     runs-on: ubuntu-24.04
@@ -59,6 +60,6 @@ jobs:
         with:
           image: runtime-pkg
           tags: latest 14.2 14.2-p3
-          registry: ghcr.io/{{ env.GHOWNER_LC }}
+          registry: ghcr.io/${{ env.GHOWNER_LC }}
           username: ${{ github.actor }}
           password: ${{ github.token }}
