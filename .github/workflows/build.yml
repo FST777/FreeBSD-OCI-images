@@ -25,7 +25,7 @@ jobs:
           run: |
             sudo ./build-assets/setup.sh
             sudo buildah bud -t runtime-pkg:latest ./Containerfiles/runtime-pkg
-            sudo buildah push runtime-pkg:latest oci-archive:runtime-pkg-${{ matrix.architecture}}.tar:runtime-pkg:latest
+            sudo buildah push runtime-pkg:latest oci-archive:runtime-pkg.${{ matrix.architecture}}.tar:runtime-pkg:latest
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
