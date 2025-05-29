@@ -15,11 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Registry
-        run: |
-          podman run -dp 5000:5000 --name registry registry
-          echo "HOSTNM=$(hostname)" >> ${GITHUB_ENV}
-
       - name: Build
         uses: cross-platform-actions/action@v0.28.0
         with:
@@ -29,13 +24,8 @@ jobs:
           environment_variables: HOSTNM
           run: |
             sudo ./build-assets/setup.sh
-            sudo buildah bud -t runtime-pkg:${{ matrix.architecture }} ./Containerfiles/runtime-pkg
-            sudo buildah push --tls-verify=false runtime-pkg:${{ matrix.architecture }} ${HOSTNM}:5000/runtime-pkg:${{ matrix.architecture }}
-
-      - name: Export image
-        run: |
-          podman pull --tls-verify=false localhost:5000/runtime-pkg:${{ matrix.architecture }}
-          podman push runtime-pkg:${{ matrix.architecture }} oci-archive:runtime-pkg.${{ matrix.architecture}}.tar:runtime-pkg:${{ matrix.architecture }}
+            sudo buildah bud -t runtime-pkg:latest ./Containerfiles/runtime-pkg
+            sudo buildah push runtime-pkg:latest oci-archive:runtime-pkg-${{ matrix.architecture}}.tar:runtime-pkg:latest
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -55,11 +45,7 @@ jobs:
 
       - name: Create manifest
         run: |
-          buildah pull oci-archive:runtime-pkg.x86-64.tar
-          buildah pull oci-archive:runtime-pkg.arm64.tar
-          buildah manifest create runtime-pkg:latest
-          buildah manifest add runtime-pkg:latest runtime-pkg:x86-64
-          buildah manifest add runtime-pkg:latest runtime-pkg:arm64
+          buildah manifest create runtime-pkg:latest oci-archive:runtime-pkg.x86-64.tar oci-archive:runtime-pkg.arm64.tar
 
       - name: Registry owner to lowercase
         env:
