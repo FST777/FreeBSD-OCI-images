@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches: [ "main" ]
+  schedule:
+    cron: '37 10 * * 6'
 
 jobs:
   build:
@@ -60,7 +62,7 @@ jobs:
           echo "containers=$(ls * | jq -R -s -c 'split("\n")[:-1]')"
           echo "containers=$(ls * | jq -R -s -c 'split("\n")[:-1]')" >> "${GITHUB_OUTPUT}"
 
-  upload:
+  push:
     runs-on: ubuntu-24.04
     needs: [build, list]
     strategy:
