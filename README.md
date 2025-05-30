@@ -1,9 +1,6 @@
 # FreeBSD-OCI-images
 Useful OCI container images for `---os=freebsd`
 
-> [!WARNING]  
-> This is very much a Work in Progress. Do not use this for anything important!
-
 ## What is this?
 OCI containers on FreeBSD are a new and novel way to use the decades old robust
 Jails mechanism with the ease of use of OCI compatible packaging, handling and
@@ -16,11 +13,12 @@ Linux-based containers, there is an opportunity to package FreeBSD native
 software this way as well. However, at the time of writing there is a dearth of
 base images to allow for this. This repository seeks to fill that gap.
 
-Right now, building the images is a manual affair which means that tags are a
-bit of a mess (generally, only `latest` will be there without any indication as
-to the actual version). Before expanding the list of available images,
-automation via GitHub Actions is high on the wishlist. The available images
-are:
+At the moment, building images is done via GitHub Actions. It has not yet been
+set up to use intelligent tagging, so all images result in only having the
+`latest` tag set. Use their SHA if you need stability, stable version-based
+tagging will come later.
+
+The available images are:
 
 ### runtime-pkg
 Get it from:
