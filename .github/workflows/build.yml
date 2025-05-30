@@ -40,7 +40,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          path: *.${{ matrix.architecture }}.tar
+          path: ./*.${{ matrix.architecture }}.tar
           retention-days: 1
 
   list:
