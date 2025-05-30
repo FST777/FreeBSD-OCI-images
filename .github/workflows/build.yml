@@ -47,12 +47,18 @@ jobs:
   list:
     runs-on: ubuntu-24.04
 
+    outputs:
+      containers: ${{ steps.containers.outputs.containers }}
+
     steps:
       - uses: actions/checkout@v4
 
-      - id: containers
+      - name: List containers
+        id: containers
         run: |
-          echo "containers=$(cd Containerfiles; ls * | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          cd Containerfiles
+          echo "containers=$(ls * | jq -R -s -c 'split("\n")[:-1]')"
+          echo "containers=$(ls * | jq -R -s -c 'split("\n")[:-1]')" >> "${GITHUB_OUTPUT}"
 
   upload:
     runs-on: ubuntu-24.04
