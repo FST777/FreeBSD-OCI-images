@@ -24,19 +24,41 @@ jobs:
           environment_variables: HOSTNM
           run: |
             sudo ./build-assets/setup.sh
-            sudo buildah bud -t runtime-pkg:latest ./Containerfiles/runtime-pkg
-            sudo buildah push runtime-pkg:latest oci-archive:runtime-pkg.${{ matrix.architecture}}.tar:runtime-pkg:latest
+            LIST=""
+            for c in Containerfiles/*; do
+              for d in $(grep FROM "${c}" | cut -d ' ' -f 2); do
+                if [ -r "Containerfiles/${d}" ]; then
+                  LIST="${LIST}$(basename "${c}") ${d}\n"
+                fi
+              done
+            done
+            for c in $(echo -e "${LIST}" | tsort | tail -r); do
+              sudo buildah bud -t "${c}:latest" "./Containerfiles/${c}"
+              sudo buildah push "${c}:latest" "oci-archive:${c}.${{ matrix.architecture}}.tar:${c}:latest"
+            done
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: runtime-pkg.${{ matrix.architecture }}
-          path: runtime-pkg.${{ matrix.architecture }}.tar
+          path: *.${{ matrix.architecture }}.tar
           retention-days: 1
+
+  list:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: containers
+        run: |
+          echo "::set-output name=containers::$(cd Containerfiles; ls * | jq -R -s -c 'split("\n")[:-1]')"
 
   upload:
     runs-on: ubuntu-24.04
-    needs: build
+    needs: [build, list]
+    strategy:
+      matrix:
+        container: ${{ fromJson(needs.list.outputs.containers) }}
 
     steps:
       - name: Download artifacts
@@ -46,8 +68,7 @@ jobs:
 
       - name: Create manifest
         run: |
-          buildah manifest create runtime-pkg:latest oci-archive:runtime-pkg.x86-64.tar oci-archive:runtime-pkg.arm64.tar
-          buildah tag runtime-pkg:latest runtime-pkg:14.2 runtime-pkg:14.2-p3
+          buildah manifest create ${{ matrix.container }}:latest oci-archive:${{ matrix.container }}.x86-64.tar oci-archive:${{ matrix.container }}.arm64.tar
 
       - name: Registry owner to lowercase
         env:
@@ -58,8 +79,8 @@ jobs:
       - name: Push to GHCR
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: runtime-pkg
-          tags: latest 14.2 14.2-p3
+          image: ${{ matrix.container }}
+          tags: latest
           registry: ghcr.io/${{ env.GHOWNER_LC }}
           username: ${{ github.actor }}
           password: ${{ github.token }}
