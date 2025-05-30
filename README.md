@@ -21,33 +21,27 @@ tagging will come later.
 The available images are:
 
 ### runtime-pkg
-Get it from:
-[ghcr.io/fst777/runtime-pkg](https://github.com/FST777/cayman/pkgs/container/runtime-pkg).
-
-Pull using `ghcr.io/fst777/runtime-pkg:latest`.
+- Get it from: [ghcr.io/fst777/runtime-pkg](https://github.com/FST777/cayman/pkgs/container/runtime-pkg)
+- Pull using `ghcr.io/fst777/runtime-pkg:latest`
 
 A minimal FreeBSD userspace runtime with a working and initialized `pkg`. Based
 on [the `freebsd-runtime` image as found on Docker
-Hub](https://hub.docker.com/r/freebsd/freebsd-runtime) It comes with repository
-definitions for the default pkg repo as well as PkgBase.
-This image is most suitable for building more targeted images in a multi-stage
-build configuration. Be aware that all use of the pkg command inside this image
-will almost double its size due to pkg's caching mechanism.
+Hub](https://hub.docker.com/r/freebsd/freebsd-runtime). It comes with
+repository definitions for the default pkg repo as well as PkgBase. This image
+is most suitable for building more targeted images in a multi-stage build
+configuration. Be aware that all use of the pkg command inside this image will
+almost double its size due to pkg's caching mechanism.
 
 ### busybox
-Get it from:
-[ghcr.io/fst777/busybox](https://github.com/FST777/cayman/pkgs/container/busybox).
-
-Pull using `ghcr.io/fst777/busybox:latest`.
+- Get it from: [ghcr.io/fst777/busybox](https://github.com/FST777/cayman/pkgs/container/busybox)
+- Pull using `ghcr.io/fst777/busybox:latest`
 
 What it says on the tin. Usable as a minimal userland container, suitable for
 hosting apps/scripts that require core shell utilities.
 
 ### toybox
-Get it from:
-[ghcr.io/fst777/toybox](https://github.com/FST777/cayman/pkgs/container/toybox).
-
-Pull using `ghcr.io/fst777/toybox:latest`.
+- Get it from: [ghcr.io/fst777/toybox](https://github.com/FST777/cayman/pkgs/container/toybox)
+- Pull using `ghcr.io/fst777/toybox:latest`
 
 What it says on the tin, combined with FreeBSD's own `/bin/sh` since toybox
 does not include this. Usable as a minimal userland container, suitable for
