@@ -32,6 +32,13 @@ is most suitable for building more targeted images in a multi-stage build
 configuration. Be aware that all use of the pkg command inside this image will
 greatly inflate its size due to pkg's caching mechanism.
 
+### userland
+- Get it from: [ghcr.io/fst777/userland](https://github.com/FST777/cayman/pkgs/container/userland)
+- Pull using `ghcr.io/fst777/userland:latest`
+
+A curated set of additional packages intended to provide a fairly complete
+FreeBSD userland on top of `runtime-pkg`.
+
 ### busybox
 - Get it from: [ghcr.io/fst777/busybox](https://github.com/FST777/cayman/pkgs/container/busybox)
 - Pull using `ghcr.io/fst777/busybox:latest`
