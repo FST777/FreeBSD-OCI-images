@@ -24,13 +24,13 @@ The available images are:
 - Get it from: [ghcr.io/fst777/runtime-pkg](https://github.com/FST777/cayman/pkgs/container/runtime-pkg)
 - Pull using `ghcr.io/fst777/runtime-pkg:latest`
 
-A minimal FreeBSD userspace runtime with a working and initialized `pkg`. Based
-on [the `freebsd-runtime` image as found on Docker
+A minimal FreeBSD userspace runtime with a working and initialized `pkg`.
+Inspired by [the `freebsd-runtime` image as found on Docker
 Hub](https://hub.docker.com/r/freebsd/freebsd-runtime). It comes with
 repository definitions for the default pkg repo as well as PkgBase. This image
 is most suitable for building more targeted images in a multi-stage build
 configuration. Be aware that all use of the pkg command inside this image will
-almost double its size due to pkg's caching mechanism.
+greatly inflate its size due to pkg's caching mechanism.
 
 ### busybox
 - Get it from: [ghcr.io/fst777/busybox](https://github.com/FST777/cayman/pkgs/container/busybox)
