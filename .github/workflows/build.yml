@@ -43,11 +43,9 @@ jobs:
               sudo buildah bud -t "${c}:latest" "./containers/${c}/Containerfile"
               sudo buildah push "${c}:latest" "oci-archive:${c}.${{ matrix.architecture}}.tar:${c}:latest"
               if [ -x "containers/${c}/tags.sh" ]; then
-                ./containers/${c}/tags.sh
+                sudo ./containers/${c}/tags.sh
               fi
             done
-            podman run --rm runtime-pkg pkg info
-            podman run --rm runtime-pkg pkg update
 
 #      - name: Upload artifact
 #        uses: actions/upload-artifact@v4
