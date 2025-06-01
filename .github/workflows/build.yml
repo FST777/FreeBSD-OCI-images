@@ -37,20 +37,8 @@ jobs:
               done
             done
             for c in $(echo -e "${LIST}" | tsort | tail -r); do
-              echo "================"
-              ls -l "containers/${c}"
-              echo "================"
               if [ -x "containers/${c}/build.sh" ]; then
-                echo "Execute build.sh"
                 sudo ./containers/${c}/build.sh
-                echo "================"
-                ls -l "containers/${c}"
-                ls -l "containers/${c}/root"
-                echo "================"
-              else
-                stat "containers/${c}/build.sh"
-                echo "================"
-                exit 42
               fi
               sudo buildah bud -t "${c}:latest" "./containers/${c}/Containerfile"
               sudo buildah push "${c}:latest" "oci-archive:${c}.${{ matrix.architecture}}.tar:${c}:latest"

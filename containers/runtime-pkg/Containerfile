@@ -1,6 +1,6 @@
 FROM scratch
 LABEL maintainer="Frans-Jan van Steenbeek <frans-jan@van-steenbeek.net>"
 
-COPY containers/runtime-pkg/root/ /
+COPY root/ /
 
 CMD ["sh"]
