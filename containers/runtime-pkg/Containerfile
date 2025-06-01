@@ -1,0 +1,6 @@
+FROM scratch
+LABEL maintainer="Frans-Jan van Steenbeek <frans-jan@van-steenbeek.net>"
+
+COPY root/ /
+
+CMD ["sh"]

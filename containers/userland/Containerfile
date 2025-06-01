@@ -1,0 +1,31 @@
+FROM runtime-pkg AS builder
+LABEL maintainer="Frans-Jan van Steenbeek <frans-jan@van-steenbeek.net>"
+
+RUN <<EOF
+    pkg install -y          \
+        FreeBSD-csh         \
+        FreeBSD-ee          \
+        FreeBSD-fetch       \
+        FreeBSD-ftp         \
+        FreeBSD-ftpd        \
+        FreeBSD-inetd       \
+        FreeBSD-openssl     \
+        FreeBSD-sendmail    \
+        FreeBSD-ssh         \
+        FreeBSD-syslogd     \
+        FreeBSD-tcpd        \
+        FreeBSD-telnet      \
+        FreeBSD-unbound     \
+        FreeBSD-utilities   \
+        FreeBSD-vi          \
+        FreeBSD-zoneinfo
+    rm -rf /var/cache/pkg/ /var/db/pkg/repos/
+EOF
+
+
+FROM scratch
+LABEL maintainer="Frans-Jan van Steenbeek <frans-jan@van-steenbeek.net>"
+
+COPY --from=builder / /
+
+CMD ["sh"]
