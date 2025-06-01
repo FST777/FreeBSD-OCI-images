@@ -3,18 +3,17 @@ name: Publish container images
 on:
   workflow_dispatch:
   push:
-    branches: ["rebuild"]
+    branches: ["main"]
     paths-ignore: ["**.md", "**.yml"]
-#  schedule:
-#    - cron: "37 10 * * 6"
+  schedule:
+    - cron: "37 10 * * 6"
 
 jobs:
   build:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-#        architecture: [x86-64, arm64]
-        architecture: [x86-64]
+        architecture: [x86-64, arm64]
 
     steps:
       - uses: actions/checkout@v4
@@ -48,57 +47,56 @@ jobs:
             done
             sudo chflags -R noschg containers/*/root && sudo rm -rf containers/*/root
 
-#      - name: Upload artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: ${{ matrix.architecture }}
-#          path: ./*.${{ matrix.architecture }}.tar
-#          retention-days: 1
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.architecture }}
+          path: ./*.${{ matrix.architecture }}.tar
+          retention-days: 1
 
-#  list:
-#    runs-on: ubuntu-24.04
-#
-#    outputs:
-#      containers: ${{ steps.containers.outputs.containers }}
-#
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - name: List containers
-#        id: containers
-#        run: |
-#          cd Containerfiles
-#          echo "containers=$(ls * | jq -R -s -c 'split("\n")[:-1]')"
-#          echo "containers=$(ls * | jq -R -s -c 'split("\n")[:-1]')" >> "${GITHUB_OUTPUT}"
-#
-#  push:
-#    runs-on: ubuntu-24.04
-#    needs: [build, list]
-#    strategy:
-#      matrix:
-#        container: ${{ fromJson(needs.list.outputs.containers) }}
-#
-#    steps:
-#      - name: Download artifacts
-#        uses: actions/download-artifact@v4
-#        with:
-#          merge-multiple: true
-#
-#      - name: Create manifest
-#        run: |
-#          buildah manifest create ${{ matrix.container }}:latest oci-archive:${{ matrix.container }}.x86-64.tar oci-archive:${{ matrix.container }}.arm64.tar
-#
-#      - name: Registry owner to lowercase
-#        env:
-#          GHOWNER: '${{ github.repository_owner }}'
-#        run: |
-#          echo "GHOWNER_LC=${GHOWNER,,}" >> ${GITHUB_ENV}
-#
-#      - name: Push to GHCR
-#        uses: redhat-actions/push-to-registry@v2
-#        with:
-#          image: ${{ matrix.container }}
-#          tags: latest
-#          registry: ghcr.io/${{ env.GHOWNER_LC }}
-#          username: ${{ github.actor }}
-#          password: ${{ github.token }}
+  list:
+    runs-on: ubuntu-24.04
+
+    outputs:
+      containers: ${{ steps.containers.outputs.containers }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: List containers
+        id: containers
+        run: |
+          cd Containerfiles
+          echo "containers=$(ls * | jq -R -s -c 'split("\n")[:-1]')" >> "${GITHUB_OUTPUT}"
+
+  push:
+    runs-on: ubuntu-24.04
+    needs: [build, list]
+    strategy:
+      matrix:
+        container: ${{ fromJson(needs.list.outputs.containers) }}
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
+      - name: Create manifest
+        run: |
+          buildah manifest create ${{ matrix.container }}:latest oci-archive:${{ matrix.container }}.x86-64.tar oci-archive:${{ matrix.container }}.arm64.tar
+
+      - name: Registry owner to lowercase
+        env:
+          GHOWNER: '${{ github.repository_owner }}'
+        run: |
+          echo "GHOWNER_LC=${GHOWNER,,}" >> ${GITHUB_ENV}
+
+      - name: Push to GHCR
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ matrix.container }}
+          tags: latest
+          registry: ghcr.io/${{ env.GHOWNER_LC }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
