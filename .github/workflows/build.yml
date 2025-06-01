@@ -66,8 +66,8 @@ jobs:
       - name: List containers
         id: containers
         run: |
-          cd Containerfiles
-          echo "containers=$(ls * | jq -R -s -c 'split("\n")[:-1]')" >> "${GITHUB_OUTPUT}"
+          cd containers
+          echo "containers=$(ls -d * | jq -R -s -c 'split("\n")[:-1]')" >> "${GITHUB_OUTPUT}"
 
   push:
     runs-on: ubuntu-24.04
