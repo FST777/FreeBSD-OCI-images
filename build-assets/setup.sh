@@ -1,4 +1,6 @@
 #!/bin/sh
+mkdir -p /usr/local/etc/pkg/repos
+cp build-assets/base.conf /usr/local/etc/pkg/repos/base.conf
 pkg install -y podman-suite
 cp /usr/local/etc/containers/pf.conf.sample /etc/pf.conf
 sed -i '' 's/ix0/vtnet0/' /etc/pf.conf
