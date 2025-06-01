@@ -37,6 +37,7 @@ jobs:
               done
             done
             for c in $(echo -e "${LIST}" | tsort | tail -r); do
+              ls -l "containers/${c}"
               if [ -x "containers/${c}/build.sh"]; then
                 ./containers/${c}/build.sh
               fi
