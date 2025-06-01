@@ -42,7 +42,10 @@ jobs:
               echo "================"
               if [ -x "containers/${c}/build.sh" ]; then
                 echo "Execute build.sh"
-                ./containers/${c}/build.sh
+                sudo ./containers/${c}/build.sh
+                echo "================"
+                ls -l "containers/${c}"
+                ls -l "containers/${c}/root"
                 echo "================"
               else
                 stat "containers/${c}/build.sh"
