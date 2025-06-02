@@ -94,13 +94,13 @@ jobs:
           for tag in $(cat ${{ matrix.container }}.x86-64.tags) $(cat ${{ matrix.container }}.arm64.tags); do
             buildah tag ${{ matrix.container }}:latest "${{ matrix.container }}:${tag}"
           done
-          echo "tags=\"latest $(for tag in $(cat ${{ matrix.container }}.x86-64.tags) $(cat ${{ matrix.container }}.arm64.tags); do echo "${tag}"; done | sort | uniq | paste -sd ' ')\"" > "${GITHUB_OUTPUT}"
+          echo "tags=latest $(for tag in $(cat ${{ matrix.container }}.x86-64.tags) $(cat ${{ matrix.container }}.arm64.tags); do echo "${tag}"; done | sort | uniq | paste -sd ' ')" > "${GITHUB_OUTPUT}"
 
       - name: Registry owner to lowercase
         env:
           GHOWNER: '${{ github.repository_owner }}'
         run: |
-          echo "GHOWNER_LC=${GHOWNER,,}" >> ${GITHUB_ENV}
+          echo "GHOWNER_LC=${GHOWNER,,}" >> "${GITHUB_ENV}"
 
       - name: Push to GHCR
         uses: redhat-actions/push-to-registry@v2
