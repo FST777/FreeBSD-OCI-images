@@ -27,28 +27,7 @@ jobs:
           environment_variables: HOSTNM
           run: |
             sudo ./build-assets/setup.sh
-            LIST=""
-            for c in containers/*; do
-              for d in $(grep FROM "${c}/Containerfile" | cut -d ' ' -f 2); do
-                if [ -r "containers/${d}/Containerfile" ]; then
-                  LIST="${LIST}$(basename "${c}") ${d}\n"
-                fi
-              done
-            done
-            for c in $(echo -e "${LIST}" | tsort | tail -r); do
-              sudo mkdir -p "containers/${c}/root"
-              if [ -x "containers/${c}/build.sh" ]; then
-                sudo ./containers/${c}/build.sh
-              fi
-              sudo buildah bud -t "${c}:latest" "./containers/${c}/Containerfile"
-              sudo buildah push "${c}:latest" "oci-archive:${c}.${{ matrix.architecture }}.tar:${c}:latest"
-              if [ -x "containers/${c}/tags.sh" ]; then
-                sudo ./containers/${c}/tags.sh > "${c}.${{ matrix.architecture }}.tags"
-              else
-                echo > "${c}.${{ matrix.architecture }}.tags"
-              fi
-              sudo chflags -R noschg "containers/${c}/root" && sudo rm -rf "containers/${c}/root"
-            done
+            sudo ./build-assets/build.sh
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -90,10 +69,12 @@ jobs:
       - name: Create manifest
         id: manifest
         run: |
+          # Create and tag manifest
           buildah manifest create ${{ matrix.container }}:latest oci-archive:${{ matrix.container }}.x86-64.tar oci-archive:${{ matrix.container }}.arm64.tar
           for tag in $(cat ${{ matrix.container }}.x86-64.tags) $(cat ${{ matrix.container }}.arm64.tags); do
             buildah tag ${{ matrix.container }}:latest "${{ matrix.container }}:${tag}"
           done
+          # Output tags (cleaned up)
           echo "tags=latest $(for tag in $(cat ${{ matrix.container }}.x86-64.tags) $(cat ${{ matrix.container }}.arm64.tags); do echo "${tag}"; done | sort | uniq | paste -sd ' ')" > "${GITHUB_OUTPUT}"
 
       - name: Registry owner to lowercase
