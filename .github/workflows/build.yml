@@ -91,6 +91,10 @@ jobs:
         id: manifest
         run: |
           buildah manifest create ${{ matrix.container }}:latest oci-archive:${{ matrix.container }}.x86-64.tar oci-archive:${{ matrix.container }}.arm64.tar
+          for tag in $(cat ${{ matrix.container }}.x86-64.tags) $(cat ${{ matrix.container }}.arm64.tags); do
+            buildah tag ${{ matrix.container }}:latest "${{ matrix.container }}:${tag}"
+          done
+          echo "tags=\"latest $(for tag in $(cat ${{ matrix.container }}.x86-64.tags) $(cat ${{ matrix.container }}.arm64.tags); do echo "${tag}"; done | sort | uniq | paste -sd ' ')\"" > "${GITHUB_OUTPUT}"
 
       - name: Registry owner to lowercase
         env:
@@ -102,7 +106,7 @@ jobs:
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ matrix.container }}
-          tags: latest
+          tags: ${{ steps.manifest.outputs.tags }}
           registry: ghcr.io/${{ env.GHOWNER_LC }}
           username: ${{ github.actor }}
           password: ${{ github.token }}
