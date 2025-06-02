@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: ["main"]
-    paths-ignore: ["**.md", "**.yml"]
+    paths-ignore: ["**.md", "**.yml", "build-assets/*"]
   schedule:
     - cron: "37 10 * * 6"
 
