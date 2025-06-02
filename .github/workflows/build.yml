@@ -27,7 +27,7 @@ jobs:
           environment_variables: HOSTNM
           run: |
             sudo ./build-assets/setup.sh
-            sudo ./build-assets/build.sh
+            sudo ./build-assets/build.sh "${{ matrix.architecture }}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

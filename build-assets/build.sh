@@ -20,13 +20,13 @@ for c in $(echo -e "${LIST}" | tsort | tail -r); do
 
     # Build the image, package it as an archive
     buildah bud -t "${c}:latest" "./containers/${c}/Containerfile"
-    buildah push "${c}:latest" "oci-archive:${c}.${{ matrix.architecture }}.tar:${c}:latest"
+    buildah push "${c}:latest" "oci-archive:${c}.${1}.tar:${c}:latest"
 
     # Create image-specific tags
     if [ -x "containers/${c}/tags.sh" ]; then
-        ./containers/${c}/tags.sh > "${c}.${{ matrix.architecture }}.tags"
+        ./containers/${c}/tags.sh > "${c}.${1}.tags"
     else
-        echo > "${c}.${{ matrix.architecture }}.tags"
+        echo > "${c}.${1}.tags"
     fi
 
     # Clean up (so the runner doesn't exit with an error)
