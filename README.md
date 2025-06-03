@@ -54,8 +54,5 @@ What it says on the tin, combined with FreeBSD's own `/bin/sh` since toybox
 does not include this. Usable as a minimal userland container, suitable for
 hosting apps/scripts that require core shell utilities.
 
-### memcached
-- Get it from: [ghcr.io/fst777/memcached](https://github.com/FST777/cayman/pkgs/container/memcached)
-- Pull using `ghcr.io/fst777/memcached:latest`
-
-Minimal memcached container. The service is exposed on port 11211.
+### Curated applications
+- [memcached](https://ghcr.io/fst777/memcached)
