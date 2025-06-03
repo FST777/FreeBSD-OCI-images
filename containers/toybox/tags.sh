@@ -1,2 +1,2 @@
 #!/bin/sh
-podman run --rm toybox toybox --version | sed 's/.*\ //'
+podman run --rm toybox toybox --version | cut -d ' ' -f 2
