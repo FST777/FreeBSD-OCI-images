@@ -18,7 +18,7 @@ set up to use intelligent tagging, so all images result in only having the
 `latest` tag set. Use their SHA if you need stability, stable version-based
 tagging will come later.
 
-The available images are:
+## Available images
 
 ### runtime-pkg
 - Get it from: [ghcr.io/fst777/runtime-pkg](https://github.com/FST777/cayman/pkgs/container/runtime-pkg)
