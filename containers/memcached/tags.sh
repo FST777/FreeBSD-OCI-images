@@ -1,2 +1,2 @@
 #!/bin/sh
-podman run --rm toybox toybox --version | cut -d ' ' -f 2
+podman run --rm memcached memcached -V | cut -d ' ' -f 2
