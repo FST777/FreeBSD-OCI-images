@@ -1,0 +1,24 @@
+FROM runtime-pkg AS builder
+
+RUN <<EOF
+  pkg install -y memcached FreeBSD-utilities
+
+  mkdir -p /tmp/root/etc /tmp/root/bin /tmp/root/libexec /tmp/root/var/run /tmp/root/usr/bin /tmp/root/root
+  cp /etc/passwd /etc/master.passwd /etc/pwd.db /etc/spwd.db /etc/group /tmp/root/etc
+  cp $(which memcached) /tmp/root/bin
+  cp /libexec/ld-elf.* /tmp/root/libexec
+  cp /var/run/ld-elf.so.hints /tmp/root/var/run
+  for lib in $(ldd -f '%p\n' -f '' /tmp/root/bin/memcached); do
+      mkdir -p "/tmp/root$(dirname "${lib}")"
+      cp "${lib}" "/tmp/root$(dirname "${lib}")"
+  done
+EOF
+
+
+FROM scratch
+LABEL maintainer="Frans-Jan van Steenbeek <frans-jan@van-steenbeek.net>"
+
+COPY --from=builder /tmp/root/ /
+
+EXPOSE 11211
+CMD ["memcached", "-u", "root"]
