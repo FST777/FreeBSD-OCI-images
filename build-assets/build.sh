@@ -31,4 +31,12 @@ for c in $(echo -e "${LIST}" | tsort | tail -r); do
 
     # Clean up (so the runner doesn't exit with an error)
     chflags -R noschg "containers/${c}/root" && rm -rf "containers/${c}/root"
+
+    # If this is our core builder image, have a local version with pkg cache
+    if [ "${c}" == "runtime-pkg" ]; then
+        buildah from --name builder runtime-pkg
+        buildah run builder pkg install -y FreeBSD-utilities
+        buildah commit builder runtime-pkg
+        buildah rm builder
+    fi
 done
