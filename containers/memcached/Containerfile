@@ -1,6 +1,7 @@
 FROM runtime-pkg AS builder
 
 RUN <<EOF
+  umask 0022
   pkg install -y memcached FreeBSD-utilities
 
   mkdir -p /tmp/root/etc /tmp/root/bin /tmp/root/libexec /tmp/root/var/run /tmp/root/usr/bin /tmp/root/root
