@@ -56,3 +56,4 @@ hosting apps/scripts that require core shell utilities.
 
 ### Curated applications
 - [memcached](https://ghcr.io/fst777/memcached)
+- [nginx](https://ghcr.io/fst777/nginx)
