@@ -13,10 +13,12 @@ Linux-based containers, there is an opportunity to package FreeBSD native
 software this way as well. However, at the time of writing there is a dearth of
 base images to allow for this. This repository seeks to fill that gap.
 
-At the moment, building images is done via GitHub Actions. It has not yet been
-set up to use intelligent tagging, so all images result in only having the
-`latest` tag set. Use their SHA if you need stability, stable version-based
-tagging will come later.
+FreeBSD's pkg repository provides the included software. Images are build with
+GitHub Actions and tagged with their minor & patch versions where applicable
+(aside from `latest`). Images are rebuild every week as well as on significant
+changes in the build code. Use their SHA instead of these tags if you need the
+exact same image multiple times, but tracking the version that's right for you
+is recommended to ensure getting the latest stability & completeness fixes.
 
 ## Available images
 
