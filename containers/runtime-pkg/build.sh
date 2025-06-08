@@ -8,3 +8,4 @@ cp /etc/pkg/*.conf "${rootdir}etc/pkg/"
 cp /usr/local/etc/pkg/repos/*.conf "${rootdir}usr/local/etc/pkg/repos/"
 pkg -r "${rootdir}" install -y pkg FreeBSD-runtime FreeBSD-caroot FreeBSD-certctl FreeBSD-rc
 rm -rf "${rootdir}var/db/pkg/repos" "${rootdir}var/cache/pkg" "${rootdir}usr/local/sbin/pkg-static"
+chroot "${rootdir}" /etc/rc.d/ldconfig start
