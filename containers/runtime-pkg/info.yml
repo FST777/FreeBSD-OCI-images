@@ -1,0 +1,4 @@
+comment: "Minimal runtime with a working pkg"
+licenses: [
+  "BSD2CLAUSE"
+]

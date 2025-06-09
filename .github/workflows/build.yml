@@ -69,6 +69,8 @@ jobs:
       - name: Create manifest
         id: manifest
         run: |
+          sudo apt-get update
+          sudo apt-get install yq
           # Create and tag manifest
           buildah manifest create ${{ matrix.container }}:latest oci-archive:${{ matrix.container }}.x86-64.tar oci-archive:${{ matrix.container }}.arm64.tar
           for tag in $(cat ${{ matrix.container }}.x86-64.tags) $(cat ${{ matrix.container }}.arm64.tags); do
@@ -76,6 +78,9 @@ jobs:
           done
           # Output tags (cleaned up)
           echo "tags=latest $(for tag in $(cat ${{ matrix.container }}.x86-64.tags) $(cat ${{ matrix.container }}.arm64.tags); do echo "${tag}"; done | sort | uniq | paste -sd ' ')" > "${GITHUB_OUTPUT}"
+          # Annotate manifest with license and description
+          buildah manifest annotate --annotation "org.opencontainers.image.licenses=$(yq ".licenses[0]" ${{ matrix.container }}.x86-64.yml)"
+          buildah manifest annotate --annotation "org.opencontainers.image.description=$(yq ".comment" ${{ matrix.container }}.x86-64.yml)"
 
       - name: Registry owner to lowercase
         env:

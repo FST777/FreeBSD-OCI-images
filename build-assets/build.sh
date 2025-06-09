@@ -23,10 +23,11 @@ for c in $(echo -e "${LIST}" | tsort | tail -r); do
     buildah push "${c}:latest" "oci-archive:${c}.${1}.tar:${c}:latest"
 
     # Create image-specific tags
-    if [ -x "containers/${c}/tags.sh" ]; then
-        ./containers/${c}/tags.sh > "${c}.${1}.tags"
+    if [ -x "containers/${c}/info.sh" ]; then
+        "./containers/${c}/info.sh" "${c}.${1}"
     else
         echo > "${c}.${1}.tags"
+        echo > "${c}.${1}.yml"
     fi
 
     # Clean up (so the runner doesn't exit with an error)
