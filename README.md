@@ -1,5 +1,5 @@
 # FreeBSD-OCI-images
-Useful OCI container images for `---os=freebsd`
+Useful OCI container images for `--os=freebsd`
 
 ## What is this?
 OCI containers on FreeBSD are a new and novel way to use the decades old robust
@@ -57,5 +57,5 @@ does not include this. Usable as a minimal userland container, suitable for
 hosting apps/scripts that require core shell utilities.
 
 ### Curated applications
-- [memcached](https://ghcr.io/fst777/memcached)
-- [nginx](https://ghcr.io/fst777/nginx)
+- [memcached](containers/memcached/README.md)
+- [nginx](containers/nginx/README.md)
