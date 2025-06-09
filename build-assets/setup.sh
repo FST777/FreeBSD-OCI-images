@@ -6,6 +6,8 @@ cp build-assets/base.conf /usr/local/etc/pkg/repos/base.conf
 
 # Install OCIJail container runtime + Red Hat's container tooling
 # We primarily need buildah, but let's have the whole suite
+pkg update
+pkg upgrade -y
 pkg install -y podman-suite
 
 # Set up PF for networking
