@@ -6,7 +6,7 @@ if [ "${version}" == "${semvershort}" ]; then
 else
     echo "${version} ${semvershort}" > "${1}.tags"
 fi
+echo "source: \"https://github.com/FST777/FreeBSD-OCI-images\"" > "${1}.yml"
 pkg fetch -yo . busybox
-pkg info -RF All/busybox*pkg > "${1}.yml"
+pkg info -RF All/busybox*pkg >> "${1}.yml"
 rm -rf All
-echo "source: \"https://github.com/FST777/FreeBSD-OCI-images\"" >> "${1}.yml"
