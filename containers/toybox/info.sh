@@ -9,3 +9,4 @@ fi
 pkg fetch -yo . toybox
 pkg info -RF All/toybox*pkg > "${1}.yml"
 rm -rf All
+echo "source: \"https://github.com/FST777/FreeBSD-OCI-images\"" >> "${1}.yml"

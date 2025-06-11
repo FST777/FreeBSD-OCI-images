@@ -81,6 +81,7 @@ jobs:
           # Annotate manifest with license and description
           buildah manifest annotate --index --annotation "org.opencontainers.image.licenses=$(yq -r ".licenses[0]" ${{ matrix.container }}.x86-64.yml)"
           buildah manifest annotate --index --annotation "org.opencontainers.image.description=$(yq -r ".comment" ${{ matrix.container }}.x86-64.yml)"
+          buildah manifest annotate --index --annotation "org.opencontainers.image.source=$(yq -r ".source" ${{ matrix.container }}.x86-64.yml)"
 
       - name: Registry owner to lowercase
         env:

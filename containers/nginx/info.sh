@@ -9,3 +9,4 @@ fi
 pkg fetch -yo . nginx
 pkg info -RF All/nginx*pkg > "${1}.yml"
 rm -rf All
+echo "source: \"https://github.com/FST777/FreeBSD-OCI-images/nginx\"" >> "${1}.yml"

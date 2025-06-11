@@ -9,3 +9,4 @@ fi
 pkg fetch -yo . busybox
 pkg info -RF All/busybox*pkg > "${1}.yml"
 rm -rf All
+echo "source: \"https://github.com/FST777/FreeBSD-OCI-images\"" >> "${1}.yml"

@@ -9,3 +9,4 @@ fi
 pkg fetch -yo . memcached
 pkg info -RF All/memcached*pkg > "${1}.yml"
 rm -rf All
+echo "source: \"https://github.com/FST777/FreeBSD-OCI-images/memcached\"" >> "${1}.yml"
