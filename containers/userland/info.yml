@@ -1,0 +1,5 @@
+comment: "Curated, fairly complete userspace"
+licenses: [
+  "BSD2CLAUSE"
+]
+source: "https://github.com/FST777/FreeBSD-OCI-images"

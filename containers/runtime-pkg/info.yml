@@ -1,0 +1,5 @@
+comment: "Minimal runtime with a working pkg"
+licenses: [
+  "BSD2CLAUSE"
+]
+source: "https://github.com/FST777/FreeBSD-OCI-images"
