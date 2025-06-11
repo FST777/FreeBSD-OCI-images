@@ -26,13 +26,13 @@ jobs:
           version: 14.2
           environment_variables: HOSTNM
           run: |
-            echo -en "\e[34m"
+            echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             echo " > Set-up the build VM"
-            echo -en "\e[0m"
+            echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             sudo ./build-assets/setup.sh
-            echo -en "\e[34m"
+            echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             echo " > Build containers"
-            echo -en "\e[0m"
+            echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             sudo ./build-assets/build.sh "${{ matrix.architecture }}"
 
       - name: Upload artifact
@@ -57,9 +57,9 @@ jobs:
       - name: List containers
         id: containers
         run: |
-          echo -en "\e[34m"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo " > List containers for the matrix"
-          echo -en "\e[0m"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           cd containers
           echo "containers=$(ls -d * | jq -R -s -c 'split("\n")[:-1]')" >> "${GITHUB_OUTPUT}"
 
@@ -79,26 +79,26 @@ jobs:
       - name: Create manifest
         id: manifest
         run: |
-          echo -en "\e[34m"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo " > Install yq"
-          echo -en "\e[0m"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           sudo apt-get update
           sudo apt-get install yq
-          echo -en "\e[34m"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo " > Create and tag manifest"
-          echo -en "\e[0m"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           sudo apt-get update
           buildah manifest create ${{ matrix.container }}:latest oci-archive:${{ matrix.container }}.x86-64.tar oci-archive:${{ matrix.container }}.arm64.tar
           for tag in $(cat ${{ matrix.container }}.x86-64.tags) $(cat ${{ matrix.container }}.arm64.tags); do
             buildah tag ${{ matrix.container }}:latest "${{ matrix.container }}:${tag}"
           done
-          echo -en "\e[34m"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo " > Output tags (cleaned up)"
-          echo -en "\e[0m"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo "tags=latest $(for tag in $(cat ${{ matrix.container }}.x86-64.tags) $(cat ${{ matrix.container }}.arm64.tags); do echo "${tag}"; done | sort | uniq | paste -sd ' ')" > "${GITHUB_OUTPUT}"
-          echo -en "\e[34m"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo " > Annotate manifest with license and description"
-          echo -en "\e[0m"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           buildah manifest annotate --index --annotation "org.opencontainers.image.licenses=$(yq -r ".licenses[0]" ${{ matrix.container }}.x86-64.yml)"
           buildah manifest annotate --index --annotation "org.opencontainers.image.description=$(yq -r ".comment" ${{ matrix.container }}.x86-64.yml)"
           buildah manifest annotate --index --annotation "org.opencontainers.image.source=$(yq -r ".source" ${{ matrix.container }}.x86-64.yml)"

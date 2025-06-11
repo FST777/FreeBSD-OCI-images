@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Sort dependencies
-echo -en "\e[34m"
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo " >> Sort dependencies"
-echo -en "\e[0m"
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 LIST=""
 for c in containers/*; do
     for d in $(grep FROM "${c}/Containerfile" | cut -d ' ' -f 2); do
@@ -14,34 +14,34 @@ for c in containers/*; do
 done
 
 # Build images in order
-echo -en "\e[34m"
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo " >> Build images"
-echo -en "\e[0m"
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 for c in $(echo -e "${LIST}" | tsort | tail -r); do
-    echo -en "\e[34m"
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     echo " >>> ${c}"
-    echo -en "\e[0m"
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
     # Some images need a non-containerized build
     mkdir -p "containers/${c}/root"
     if [ -x "containers/${c}/build.sh" ]; then
-        echo -en "\e[34m"
+        echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         echo " >>>> run build.sh"
-        echo -en "\e[0m"
+        echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         ./containers/${c}/build.sh
     fi
 
     # Build the image, package it as an archive
-    echo -en "\e[34m"
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     echo " >>>> buildah bud & push to archive"
-    echo -en "\e[0m"
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     buildah bud -t "${c}:latest" "./containers/${c}/Containerfile"
     buildah push "${c}:latest" "oci-archive:${c}.${1}.tar:${c}:latest"
 
     # Create image-specific tags
-    echo -en "\e[34m"
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     echo " >>>> construct tags and labels"
-    echo -en "\e[0m"
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     if [ -x "containers/${c}/info.sh" ]; then
         "./containers/${c}/info.sh" "${c}.${1}"
     else
@@ -50,16 +50,16 @@ for c in $(echo -e "${LIST}" | tsort | tail -r); do
     fi
 
     # Clean up (so the runner doesn't exit with an error)
-    echo -en "\e[34m"
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     echo " >>>> cleanup"
-    echo -en "\e[0m"
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     chflags -R noschg "containers/${c}/root" && rm -rf "containers/${c}/root"
 
     # If this is our core builder image, have a local version with pkg cache
     if [ "${c}" == "runtime-pkg" ]; then
-        echo -en "\e[34m"
+        echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         echo " >>>> set up runtime-pkg as cached builder"
-        echo -en "\e[0m"
+        echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         buildah from --name builder runtime-pkg
         buildah run builder pkg install -y FreeBSD-utilities
         buildah commit builder runtime-pkg
