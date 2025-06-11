@@ -79,8 +79,8 @@ jobs:
           # Output tags (cleaned up)
           echo "tags=latest $(for tag in $(cat ${{ matrix.container }}.x86-64.tags) $(cat ${{ matrix.container }}.arm64.tags); do echo "${tag}"; done | sort | uniq | paste -sd ' ')" > "${GITHUB_OUTPUT}"
           # Annotate manifest with license and description
-          buildah manifest annotate --annotation "org.opencontainers.image.licenses=$(yq ".licenses[0]" ${{ matrix.container }}.x86-64.yml)"
-          buildah manifest annotate --annotation "org.opencontainers.image.description=$(yq ".comment" ${{ matrix.container }}.x86-64.yml)"
+          buildah manifest annotate --index --annotation "org.opencontainers.image.licenses=$(yq -r ".licenses[0]" ${{ matrix.container }}.x86-64.yml)"
+          buildah manifest annotate --index --annotation "org.opencontainers.image.description=$(yq -r ".comment" ${{ matrix.container }}.x86-64.yml)"
 
       - name: Registry owner to lowercase
         env:
