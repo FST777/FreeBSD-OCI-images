@@ -6,6 +6,6 @@ if [ "${version}" == "${semvershort}" ]; then
 else
     echo "${version} ${semvershort}" > "${1}.tags"
 fi
-pkg fetch -yo memcached
-pkg info -RF All/memcached*pkg > "${1}.yml"
+pkg fetch -yo . nginx
+pkg info -RF All/nginx*pkg > "${1}.yml"
 rm -rf All

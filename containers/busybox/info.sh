@@ -6,6 +6,6 @@ if [ "${version}" == "${semvershort}" ]; then
 else
     echo "${version} ${semvershort}" > "${1}.tags"
 fi
-pkg fetch -yo busybox
+pkg fetch -yo . busybox
 pkg info -RF All/busybox*pkg > "${1}.yml"
 rm -rf All
