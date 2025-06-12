@@ -91,9 +91,12 @@ jobs:
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo " > Annotate manifest (license, source, description)"
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          buildah manifest annotate --annotation "org.opencontainers.image.licenses=$(yq -r ".licenses[0]" ${{ matrix.container }}.x86-64.yml)" ${{ matrix.container }}:latest $(buildah inspect ${{ matrix.container }}:latest | jq -r ".manifests[0].digest")
-          buildah manifest annotate --annotation "org.opencontainers.image.description=$(yq -r ".comment" ${{ matrix.container }}.x86-64.yml)" ${{ matrix.container }}:latest $(buildah inspect ${{ matrix.container }}:latest | jq -r ".manifests[0].digest")
-          buildah manifest annotate --annotation "org.opencontainers.image.source=$(yq -r ".source" ${{ matrix.container }}.x86-64.yml)" ${{ matrix.container }}:latest $(buildah inspect ${{ matrix.container }}:latest | jq -r ".manifests[0].digest")
+          buildah manifest annotate --annotation "org.opencontainers.image.licenses='$(yq -r ".licenses[0]" ${{ matrix.container }}.x86-64.yml)'" \
+            ${{ matrix.container }}:latest $(buildah inspect ${{ matrix.container }}:latest | jq -r '.manifests[0].digest + " " + .manifests[1].digest')
+          buildah manifest annotate --annotation "org.opencontainers.image.description='$(yq -r ".comment" ${{ matrix.container }}.x86-64.yml)'" \
+            ${{ matrix.container }}:latest $(buildah inspect ${{ matrix.container }}:latest | jq -r '.manifests[0].digest + " " + .manifests[1].digest')
+          buildah manifest annotate --annotation "org.opencontainers.image.source='$(yq -r ".source" ${{ matrix.container }}.x86-64.yml)'" \
+            ${{ matrix.container }}:latest $(buildah inspect ${{ matrix.container }}:latest | jq -r '.manifests[0].digest + " " + .manifests[1].digest')
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo " > Tag manifest"
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
