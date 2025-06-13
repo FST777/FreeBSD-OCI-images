@@ -33,10 +33,9 @@ for c in $(echo -e "${LIST}" | tsort | tail -r); do
 
     # Build the image, package it as an archive
     echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    echo " >>>> buildah bud & push to archive"
+    echo " >>>> Build ${c}"
     echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     buildah bud -t "${c}:latest" "./containers/${c}/Containerfile"
-    buildah push "${c}:latest" "oci-archive:${c}.${1}.tar:${c}:latest"
 
     # Create image-specific tags
     echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
@@ -49,6 +48,34 @@ for c in $(echo -e "${LIST}" | tsort | tail -r); do
         echo > "${c}.${1}.yml"
     fi
 
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    echo " >>>> Annotate manifest"
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    for digest in $(buildah inspect ${c}:latest | jq -r '.manifests[].digest'); do
+        buildah manifest annotate \
+            --annotation "org.opencontainers.image.licenses=$(yq -r ".licenses[0]" ${c}.${1}.yml)" \
+            --annotation "org.opencontainers.image.description=$(yq -r ".comment" ${c}.${1}.yml)" \
+            --annotation "org.opencontainers.image.source=$(yq -r ".source" ${c}.${1}.yml)" \
+            ${c}:latest "${digest}"
+    done
+
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    echo " >>>> Tag manifest"
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    for tag in $(cat ${c}.${1}.tags); do
+        buildah tag ${c}:latest "${c}:${tag}"
+    done
+
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    echo " >>>> Display result"
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    buildah inspect "${c}:latest"
+
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    echo " >>>> Push ${c} to archive"
+    echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    buildah push "${c}:latest" "oci-archive:${c}.${1}.tar:${c}:latest"
+
     # Clean up (so the runner doesn't exit with an error)
     echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     echo " >>>> cleanup"
@@ -58,7 +85,7 @@ for c in $(echo -e "${LIST}" | tsort | tail -r); do
     # If this is our core builder image, have a local version with pkg cache
     if [ "${c}" == "runtime-pkg" ]; then
         echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-        echo " >>>> set up runtime-pkg as cached builder"
+        echo " >>>>> set up runtime-pkg as cached builder"
         echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         buildah from --name builder runtime-pkg
         buildah run builder pkg install -y FreeBSD-utilities
