@@ -31,7 +31,7 @@ jobs:
           buildah from --name buildahbud alpine
           buildah run buildahbud apk add buildah
           buildah commit buildahbud buildah
-          podman run -d --name buildah --security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v ./.local/share/containers:/var/lib/containers:Z -v .:/mnt buildah tail -f /dev/null
+          podman run -d --name buildah --security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v ${HOME}/.local/share/containers:/var/lib/containers:Z -v .:/mnt buildah tail -f /dev/null
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo " > Create and annotate manifest"
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
