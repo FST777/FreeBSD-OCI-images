@@ -36,11 +36,11 @@ jobs:
           echo " > Create and annotate manifest"
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           podman exec buildah buildah manifest create test:latest oci-archive:/mnt/testa.tar oci-archive:/mnt/testb.tar
-          podman exec buildah buildah manifest annotate \
+          podman exec buildah buildah manifest annotate --index \
             --annotation "org.opencontainers.image.licenses=PD" \
             --annotation "org.opencontainers.image.description=Test multi-image manifest" \
             --annotation "org.opencontainers.image.source=https://localhost/here" \
-            test:latest "${digest}"
+            test:latest
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo " > Display containerized results"
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
