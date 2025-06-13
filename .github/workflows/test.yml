@@ -1,0 +1,45 @@
+name: Testing GHA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["develop"]
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Test
+        run: |
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+          echo " > Create dummy container images"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+          buildah from --name testa scratch
+          buildah commit testa testa:latest
+          buildah push testa:latest oci-archive:testa.tar:latest
+          buildah from --name testb scratch
+          buildah commit testb testb:latest
+          buildah push testb:latest oci-archive:testb.tar:latest
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+          echo " > Install yq"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+          sudo apt-get update
+          sudo apt-get install yq
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+          echo " > Create manifest"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+          buildah manifest create test:latest oci-archive:testa.tar oci-archive:testb.tar
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+          echo " > Annotate manifest (license, source, description)"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+          for digest in $(buildah inspect test:latest | jq -r '.manifests[].digest'); do
+            buildah manifest annotate \
+              --annotation "org.opencontainers.image.licenses=PD" \
+              --annotation "org.opencontainers.image.description=Test multi-image manifest" \
+              --annotation "org.opencontainers.image.source=https://localhost/here" \
+              test:latest "${digest}"
+          done
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+          echo " > Display results"
+          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+          buildah inspect test:latest
