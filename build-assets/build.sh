@@ -49,15 +49,15 @@ for c in $(echo -e "${LIST}" | tsort | tail -r); do
     fi
 
     echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    echo " >>>> Annotate manifest"
+    echo " >>>> Label image"
     echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     buildah from --name ${c} ${c}:latest
     buildah config \
-        --annotation "org.opencontainers.image.licenses=$(yq -r ".licenses[0]" ${c}.${1}.yml)" \
-        --annotation "org.opencontainers.image.description=$(yq -r ".comment" ${c}.${1}.yml)" \
-        --annotation "org.opencontainers.image.source=$(yq -r ".source" ${c}.${1}.yml)" \
+        --label "org.opencontainers.image.licenses=$(yq -r ".licenses[0]" ${c}.${1}.yml)" \
+        --label "org.opencontainers.image.description=$(yq -r ".comment" ${c}.${1}.yml)" \
+        --label "org.opencontainers.image.source=$(yq -r ".source" ${c}.${1}.yml)" \
         ${c}
-    buildah commit ${c} ${c}:latest
+    buildah commit --squash ${c} ${c}:latest
 
     echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     echo " >>>> Tag manifest"
