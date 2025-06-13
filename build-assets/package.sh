@@ -17,12 +17,11 @@ buildah from --name buildahbud alpine
 buildah run buildahbud apk add buildah
 buildah commit buildahbud buildah
 podman run -d --name buildah --security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw \
-    -v ${HOME}/.local/share/containers:/var/lib/containers:Z -v .:/mnt buildah tail -f /dev/null
+    -v ${HOME}/.local/share/containers:/var/lib/containers:Z buildah tail -f /dev/null
 
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo " > Create and annotate manifest"
+echo " > Annotate manifest"
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-podman exec buildah buildah manifest create ${1}:latest oci-archive:/mnt/${1}.x86-64.tar oci-archive:/mnt/${1}.arm64.tar
 podman exec buildah buildah manifest annotate --index \
     --annotation "org.opencontainers.image.licenses=$(yq -r ".licenses[0]" ${1}.x86-64.yml)" \
     --annotation "org.opencontainers.image.description=$(yq -r ".comment" ${1}.x86-64.yml)" \
