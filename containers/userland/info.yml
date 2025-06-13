@@ -1,4 +1,4 @@
-comment: "Curated, fairly complete userspace"
+comment: "Fairly complete curated FreeBSD userspace"
 licenses: [
   "BSD2CLAUSE"
 ]
