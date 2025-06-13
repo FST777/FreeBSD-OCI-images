@@ -80,10 +80,10 @@ jobs:
         id: manifest
         run: |
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          echo " > Install yq"
+          echo " > Install jq/yq"
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           sudo apt-get update
-          sudo apt-get install yq
+          sudo apt-get install jq yq
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo " > Create manifest"
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
@@ -91,12 +91,13 @@ jobs:
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo " > Annotate manifest (license, source, description)"
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          buildah manifest annotate --annotation "org.opencontainers.image.licenses='$(yq -r ".licenses[0]" ${{ matrix.container }}.x86-64.yml)'" \
-            ${{ matrix.container }}:latest $(buildah inspect ${{ matrix.container }}:latest | jq -r '.manifests[0].digest + " " + .manifests[1].digest')
-          buildah manifest annotate --annotation "org.opencontainers.image.description='$(yq -r ".comment" ${{ matrix.container }}.x86-64.yml)'" \
-            ${{ matrix.container }}:latest $(buildah inspect ${{ matrix.container }}:latest | jq -r '.manifests[0].digest + " " + .manifests[1].digest')
-          buildah manifest annotate --annotation "org.opencontainers.image.source='$(yq -r ".source" ${{ matrix.container }}.x86-64.yml)'" \
-            ${{ matrix.container }}:latest $(buildah inspect ${{ matrix.container }}:latest | jq -r '.manifests[0].digest + " " + .manifests[1].digest')
+          for digest in $(buildah inspect ${{ matrix.container }}:latest | jq -r '.manifests[].digest'); do
+            buildah manifest annotate \
+              --annotation "org.opencontainers.image.licenses=$(yq -r ".licenses[0]" ${{ matrix.container }}.x86-64.yml)" \
+              --annotation "org.opencontainers.image.description=$(yq -r ".comment" ${{ matrix.container }}.x86-64.yml)" \
+              --annotation "org.opencontainers.image.source=$(yq -r ".source" ${{ matrix.container }}.x86-64.yml)" \
+              ${{ matrix.container }}:latest "${digest}"
+          done
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
           echo " > Tag manifest"
           echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
