@@ -1,4 +1,4 @@
-FROM runtime-pkg AS builder
+FROM ghcr.io/fst777/runtime-pkg AS builder
 
 RUN <<EOF
   umask 0022

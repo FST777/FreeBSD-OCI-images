@@ -6,7 +6,7 @@ echo " >> Sort dependencies"
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 LIST=""
 for c in containers/*; do
-    for d in $(grep FROM "${c}/Containerfile" | cut -d ' ' -f 2); do
+    for d in $(grep FROM "${c}/Containerfile" | cut -d ' ' -f 2 | sed 's|ghcr.io/fst777/||'); do
         if [ -r "containers/${d}/Containerfile" ]; then
             LIST="${LIST}$(basename "${c}") ${d}\n"
         fi
@@ -89,7 +89,7 @@ for c in $(echo -e "${LIST}" | tsort | tail -r); do
         echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         buildah from --name builder runtime-pkg
         buildah run builder pkg install -y FreeBSD-utilities
-        buildah commit builder runtime-pkg
+        buildah commit builder ghcr.io/fst777/runtime-pkg
         buildah rm builder
     fi
 done
