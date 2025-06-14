@@ -2,21 +2,21 @@
 Useful OCI container images for `--os=freebsd`
 
 ## What is this?
-OCI containers on FreeBSD are a new and novel way to use the decades old robust
-Jails mechanism with the ease of use of OCI compatible packaging, handling and
-distribution that is commonplace on Linux with Podman, Docker and friends. It
-is useable with containerd (via runj) as well as podman/buildah (via ocijail),
-all available via FreeBSD packages or ports.
+OCI containers on FreeBSD are a new and novel way to make use of the robust,
+decades old Jails mechanism with the ease of use of OCI compatible packaging,
+handling and distribution, as known and commonplace on Linux (with Podman,
+Docker and friends). It is useable with containerd (via runj) as well as
+podman/buildah (via ocijail), all available via FreeBSD packages or ports.
 
 While FreeBSD's excellent Linux compatibility layer allows for decent usage of
 Linux-based containers, there is an opportunity to package FreeBSD native
 software this way as well. However, at the time of writing there is a dearth of
-base images to allow for this. This repository seeks to fill that gap.
+images to allow for this. This repository seeks to fill that gap.
 
 FreeBSD's pkg repository provides the included software. Images are build with
 GitHub Actions and tagged with their minor & patch versions where applicable
 (aside from `latest`). Images are rebuild every week as well as on significant
-changes in the build code. Use their SHA instead of these tags if you need the
+changes in the build code. Use their SHA instead of the tags if you need the
 exact same image multiple times, but tracking the version that's right for you
 is recommended to ensure getting the latest stability & completeness fixes.
 
