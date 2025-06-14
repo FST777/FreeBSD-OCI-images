@@ -59,3 +59,4 @@ hosting apps/scripts that require core shell utilities.
 ### Curated applications
 - [memcached](containers/memcached/README.md)
 - [nginx](containers/nginx/README.md)
+- [redis](containers/redis/README.md)

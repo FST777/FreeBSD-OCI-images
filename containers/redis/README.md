@@ -7,4 +7,13 @@ document and vector query engine.
 - Pull using `ghcr.io/fst777/redis:latest`
 
 # Image specific notes
+Configuration resides here:
+- `/usr/local/etc/redis.conf` for use with `redis-server`
+- `/usr/local/etc/sentinel.conf` for use with `redis-sentinel`
+
+When no command is issues, `redis-server` will start with the above
+configuration file as the sole argument.
+
+The default data path is `/data`, which is configured to be a volume.
+
 By default, redis listens on port 6397. This port is exposed by the image.
