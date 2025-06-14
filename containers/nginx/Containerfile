@@ -19,8 +19,8 @@ RUN <<EOF
   rm /tmp/root/usr/local/etc/nginx/*-dist
   cp -r /usr/local/www/nginx-dist /tmp/root/usr/local/www/nginx-dist
   cp /usr/local/www/nginx/index.html /tmp/root/usr/local/www/nginx/index.html
-  ln -s /dev/stdout /var/log/nginx/access.log
-  ln -s /dev/stderr /var/log/nginx/error.log
+  ln -s /dev/stdout /tmp/root/var/log/nginx/access.log
+  ln -s /dev/stderr /tmp/root/var/log/nginx/error.log
 EOF
 
 
