@@ -60,7 +60,7 @@ for c in $(echo -e "${LIST}" | tsort | tail -r); do
     buildah commit --squash ${c} ${c}:latest
 
     echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    echo " >>>> Tag manifest"
+    echo " >>>> Tag image"
     echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     for tag in $(cat ${c}.${1}.tags); do
         buildah tag ${c}:latest "${c}:${tag}"

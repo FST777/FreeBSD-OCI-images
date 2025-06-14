@@ -22,23 +22,32 @@ podman run -d --name buildah --security-opt label=disable --security-opt seccomp
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo " > Annotate manifest"
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-podman exec buildah buildah manifest annotate --index \
-    --annotation "org.opencontainers.image.licenses=$(yq -r ".licenses[0]" ${1}.x86-64.yml)" \
-    --annotation "org.opencontainers.image.description=$(yq -r ".comment" ${1}.x86-64.yml)" \
-    --annotation "org.opencontainers.image.source=$(yq -r ".source" ${1}.x86-64.yml)" \
-    ${1}:latest
+if [ "$(yq '.comment + .licenses[0] + .source' ${1}.x86-64.yml)" != "$(yq '.comment + .licenses[0] + .source' ${1}.arm64.yml)" ]; then
+    echo "The labels for the x86-64 and arm64 builds do not match!"
+    exit 1
+else
+    podman exec buildah buildah manifest annotate --index \
+        --annotation "org.opencontainers.image.licenses=$(yq -r ".licenses[0]" ${1}.x86-64.yml)" \
+        --annotation "org.opencontainers.image.description=$(yq -r ".comment" ${1}.x86-64.yml)" \
+        --annotation "org.opencontainers.image.source=$(yq -r ".source" ${1}.x86-64.yml)" \
+        ${1}:latest
+fi
 
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo " >> Tag manifest"
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-for tag in $(cat ${1}.x86-64.tags) $(cat ${1}.arm64.tags); do
-    podman exec buildah buildah tag ${1}:latest "${1}:${tag}"
-done
+if ! diff -q ${1}.x86-64.tags ${1}.arm64.tags; then
+    exit 1
+else
+    for tag in $(cat ${1}.x86-64.tags); do
+        podman exec buildah buildah tag ${1}:latest "${1}:${tag}"
+    done
+fi
 
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo " >> Output tags (cleaned up)"
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo "tags=latest $(for tag in $(cat ${1}.x86-64.tags) $(cat ${1}.arm64.tags); do echo "${tag}"; done | sort | uniq | paste -sd ' ')" > "${GITHUB_OUTPUT}"
+echo "tags=latest $(cat ${1}.x86-64.tags)" > "${GITHUB_OUTPUT}"
 
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo " >> Display result"
