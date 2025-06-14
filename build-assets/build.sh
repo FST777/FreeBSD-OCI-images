@@ -89,7 +89,7 @@ for c in $(echo -e "${LIST}" | tsort | tail -r); do
         echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         buildah from --name builder runtime-pkg
         buildah run builder pkg install -y FreeBSD-utilities
-        buildah commit builder runtime-pkg
+        buildah commit builder ghcr.io/fst777/runtime-pkg
         buildah rm builder
     fi
 done

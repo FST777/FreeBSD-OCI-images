@@ -1,4 +1,4 @@
-FROM runtime-pkg AS builder
+FROM ghcr.io/fst777/runtime-pkg AS builder
 LABEL maintainer="Frans-Jan van Steenbeek <frans-jan@van-steenbeek.net>"
 
 RUN <<EOF
