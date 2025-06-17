@@ -1,4 +1,4 @@
-FROM ghcr.io/fst777/runtime-pkg AS builder
+FROM ghcr.io/freebsd/freebsd-runtime:14.3 AS builder
 LABEL maintainer="Frans-Jan van Steenbeek <frans-jan@van-steenbeek.net>"
 
 RUN <<EOF

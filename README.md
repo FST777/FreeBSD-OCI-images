@@ -26,6 +26,11 @@ is recommended to ensure getting the latest stability & completeness fixes.
 - Get it from: [ghcr.io/fst777/runtime-pkg](https://github.com/FST777/cayman/pkgs/container/runtime-pkg)
 - Pull using `ghcr.io/fst777/runtime-pkg:latest`
 
+This image is now deprecated. For FreeBSD 14.2 this images was needed since the
+upstream `freebsd-runtime`'s `pkg` did not cleanly self-install. Now that it
+does, that image is preferable over own own solution. It is kept here for now
+for posterity's sake.
+
 A minimal FreeBSD userspace runtime with a working and initialized `pkg`.
 Inspired by [the `freebsd-runtime` image as found on Docker
 Hub](https://hub.docker.com/r/freebsd/freebsd-runtime). It comes with
@@ -39,7 +44,7 @@ greatly inflate its size due to pkg's caching mechanism.
 - Pull using `ghcr.io/fst777/userland:latest`
 
 A curated set of additional packages intended to provide a fairly complete
-FreeBSD userland on top of `runtime-pkg`.
+FreeBSD userland on top of `freebsd-runtime`.
 
 ### busybox
 - Get it from: [ghcr.io/fst777/busybox](https://github.com/FST777/cayman/pkgs/container/busybox)

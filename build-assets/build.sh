@@ -6,12 +6,23 @@ echo " >> Sort dependencies"
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 LIST=""
 for c in containers/*; do
+    LIST="${LIST}$(basename "${c}")\n"
     for d in $(grep FROM "${c}/Containerfile" | cut -d ' ' -f 2 | sed 's|ghcr.io/fst777/||'); do
         if [ -r "containers/${d}/Containerfile" ]; then
             LIST="${LIST}$(basename "${c}") ${d}\n"
         fi
     done
 done
+echo -e "${LIST}"
+
+# Create a builder image
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo " >> Set up runtime as cached builder"
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+buildah from --name builder ghcr.io/freebsd/freebsd-runtime:14.3
+buildah run builder pkg install -y FreeBSD-utilities
+buildah commit builder ghcr.io/freebsd/freebsd-runtime:14.3
+buildah rm builder
 
 # Build images in order
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
@@ -81,15 +92,4 @@ for c in $(echo -e "${LIST}" | tsort | tail -r); do
     echo " >>>> cleanup"
     echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     chflags -R noschg "containers/${c}/root" && rm -rf "containers/${c}/root"
-
-    # If this is our core builder image, have a local version with pkg cache
-    if [ "${c}" == "runtime-pkg" ]; then
-        echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-        echo " >>>>> set up runtime-pkg as cached builder"
-        echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-        buildah from --name builder runtime-pkg
-        buildah run builder pkg install -y FreeBSD-utilities
-        buildah commit builder ghcr.io/fst777/runtime-pkg
-        buildah rm builder
-    fi
 done
