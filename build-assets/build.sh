@@ -6,7 +6,7 @@ echo " >> Sort dependencies"
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 LIST=""
 for c in containers/*; do
-    LIST="${LIST}$(basename "${c}")\n"
+    LIST="${LIST}$(basename "${c}") $(basename "${c}")\n"
     for d in $(grep FROM "${c}/Containerfile" | cut -d ' ' -f 2 | sed 's|ghcr.io/fst777/||'); do
         if [ -r "containers/${d}/Containerfile" ]; then
             LIST="${LIST}$(basename "${c}") ${d}\n"
