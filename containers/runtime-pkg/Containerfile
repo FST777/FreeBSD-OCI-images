@@ -1,6 +1,19 @@
+FROM ghcr.io/freebsd/freebsd-runtime:14.3 AS builder
+
+RUN <<EOF
+  mkdir -p /tmp/root/usr/share/keys/pkg /tmp/root/etc/pkg /tmp/root/usr/local/etc/pkg/repos
+  cp -r /usr/share/keys/pkg/trusted /tmp/root/usr/share/keys/pkg/
+  cp /etc/pkg/*.conf /tmp/root/etc/pkg/
+  cp /usr/local/etc/pkg/repos/*.conf /tmp/root/usr/local/etc/pkg/repos/
+  pkg -r /tmp/root/ install -y pkg FreeBSD-runtime FreeBSD-caroot FreeBSD-certctl FreeBSD-rc
+  rm -rf /tmp/root/var/db/pkg/repos /tmp/root/var/cache/pkg /tmp/root/usr/local/sbin/pkg-static
+  chroot /tmp/root /etc/rc.d/ldconfig start
+EOF
+
+
 FROM scratch
 LABEL maintainer="Frans-Jan van Steenbeek <frans-jan@van-steenbeek.net>"
 
-COPY root/ /
+COPY --from=builder /tmp/root/ /
 
 CMD ["sh"]
