@@ -65,3 +65,4 @@ hosting apps/scripts that require core shell utilities.
 - [memcached](containers/memcached/README.md)
 - [nginx](containers/nginx/README.md)
 - [redis](containers/redis/README.md)
+- [fluent-bit](containers/fluent-bit/README.md)
