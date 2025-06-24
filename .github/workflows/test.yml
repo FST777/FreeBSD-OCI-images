@@ -2,50 +2,22 @@ name: Testing GHA
 
 on:
   workflow_dispatch:
-#  push:
-#    branches: ["develop"]
+  push:
+    branches: ["develop"]
 
 jobs:
   test:
     runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        architecture: [x86-64, arm64]
+
     steps:
       - name: Test
-        run: |
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          echo " > Create dummy container images"
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          buildah from --name testa scratch
-          buildah commit testa testa:latest
-          buildah push testa:latest oci-archive:testa.tar:latest
-          buildah from --name testb scratch
-          buildah commit testb testb:latest
-          buildah push testb:latest oci-archive:testb.tar:latest
-          #echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          #echo " > Install yq"
-          #echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          #sudo apt-get update
-          #sudo apt-get install yq
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          echo " > Go wild"
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          buildah from --name buildahbud alpine
-          buildah run buildahbud apk add buildah
-          buildah commit buildahbud buildah
-          podman run -d --name buildah --security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v ${HOME}/.local/share/containers:/var/lib/containers:Z -v .:/mnt buildah tail -f /dev/null
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          echo " > Create and annotate manifest"
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          podman exec buildah buildah manifest create test:latest oci-archive:/mnt/testa.tar oci-archive:/mnt/testb.tar
-          podman exec buildah buildah manifest annotate --index \
-            --annotation "org.opencontainers.image.licenses=PD" \
-            --annotation "org.opencontainers.image.description=Test multi-image manifest" \
-            --annotation "org.opencontainers.image.source=https://localhost/here" \
-            test:latest
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          echo " > Display containerized results"
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          podman exec buildah buildah inspect test:latest
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          echo " > Display results locally"
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          buildah inspect test:latest
+        uses: cross-platform-actions/action@v0.28.0
+        with:
+          operating_system: freebsd
+          architecture: ${{ matrix.architecture }}
+          version: 14.3
+          run: |
+            uname -a
