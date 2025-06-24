@@ -66,3 +66,4 @@ hosting apps/scripts that require core shell utilities.
 - [nginx](containers/nginx/README.md)
 - [redis](containers/redis/README.md)
 - [fluent-bit](containers/fluent-bit/README.md)
+- [kubectl](containers/kubectl/README.md)
