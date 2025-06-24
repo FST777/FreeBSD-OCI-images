@@ -18,6 +18,6 @@ jobs:
         with:
           operating_system: freebsd
           architecture: ${{ matrix.architecture }}
-          version: 14.3
+          version: 14.2
           run: |
             uname -a
