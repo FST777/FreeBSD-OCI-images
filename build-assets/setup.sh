@@ -5,7 +5,7 @@ echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo " >> Set up PkgBase"
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 mkdir -p /usr/local/etc/pkg/repos
-cp build-assets/base.conf /usr/local/etc/pkg/repos/base.conf
+cp build-assets/FreeBSD-base.conf /usr/local/etc/pkg/repos/FreeBSD-base.conf
 
 # Install OCIJail container runtime + Red Hat's container tooling
 # We primarily need buildah, but let's have the whole suite
