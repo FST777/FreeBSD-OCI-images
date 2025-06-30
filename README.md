@@ -1,24 +1,27 @@
 # FreeBSD-OCI-images
 Useful OCI container images for `--os=freebsd`
 
+This project packages native FreeBSD software as OCI containers, combining
+Jails with modern container tooling.
+
 ## What is this?
-OCI containers on FreeBSD are a new and novel way to make use of the robust,
-decades old Jails mechanism with the ease of use of OCI compatible packaging,
-handling and distribution, as known and commonplace on Linux (with Podman,
-Docker and friends). It is useable with containerd (via runj) as well as
-podman/buildah (via ocijail), all available via FreeBSD packages or ports.
+OCI containers on FreeBSD are a new and novel way to combine the time-tested
+power of FreeBSD Jails with the simplicity and ubiquity of OCI-compatible
+tooling (familiar from Linux platforms like Podman, Docker and Kubernetes).
+They are usable with containerd (via runj) as well as podman/buildah (via
+ocijail), all of which are available via FreeBSD packages or ports.
 
-While FreeBSD's excellent Linux compatibility layer allows for decent usage of
-Linux-based containers, there is an opportunity to package FreeBSD native
-software this way as well. However, at the time of writing there is a dearth of
-images to allow for this. This repository seeks to fill that gap.
+Although FreeBSD's excellent Linux compatibility layer allows the use of
+Linux-based containers, there is now an opportunity to package FreeBSD native
+software as OCI containers. Currently however, there is a dearth of images to
+get people started --- this repository seeks to fill that gap.
 
-FreeBSD's pkg repository provides the included software. Images are build with
-GitHub Actions and tagged with their minor & patch versions where applicable
-(aside from `latest`). Images are rebuild every week as well as on significant
-changes in the build code. Use their SHA instead of the tags if you need the
-exact same image multiple times, but tracking the version that's right for you
-is recommended to ensure getting the latest stability & completeness fixes.
+FreeBSD's pkg repository provides the included software. Images are built with
+GitHub Actions and tagged with their minor and patch versions where applicable
+(in addition to `latest`). Images are rebuilt every week as well as on
+significant changes in the build code. For guaranteed consistency, use the
+image SHA; for regular updates and improvements, follow the version tags that
+best suit your needs.
 
 ## Available images
 
@@ -28,8 +31,8 @@ is recommended to ensure getting the latest stability & completeness fixes.
 
 This image is now deprecated. For FreeBSD 14.2 this images was needed since the
 upstream `freebsd-runtime`'s `pkg` did not cleanly self-install. Now that it
-does, that image is preferable over own own solution. It is kept here for now
-for posterity's sake.
+does, that image is preferable over our own solution. It is kept here for
+posterity's sake.
 
 A minimal FreeBSD userspace runtime with a working and initialized `pkg`.
 Inspired by [the `freebsd-runtime` image as found on Docker
@@ -51,14 +54,15 @@ FreeBSD userland on top of `freebsd-runtime`.
 - Pull using `ghcr.io/fst777/busybox:latest`
 
 What it says on the tin. Usable as a minimal userland container, suitable for
-hosting apps/scripts that require core shell utilities.
+hosting apps/scripts that require core shell utilities. Think of it as an
+`alpine` image for FreeBSD.
 
 ### toybox
 - Get it from: [ghcr.io/fst777/toybox](https://github.com/FST777/cayman/pkgs/container/toybox)
 - Pull using `ghcr.io/fst777/toybox:latest`
 
 What it says on the tin, combined with FreeBSD's own `/bin/sh` since toybox
-does not include this. Usable as a minimal userland container, suitable for
+does not include a shell. Usable as a minimal userland container, suitable for
 hosting apps/scripts that require core shell utilities.
 
 ### Curated applications
