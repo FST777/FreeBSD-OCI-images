@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Test
-        uses: cross-platform-actions/action@9a43557
+        uses: cross-platform-actions/action@9a4355714f90c057476048788b82147e99b7c0f0
         with:
           operating_system: freebsd
           architecture: ${{ matrix.architecture }}
