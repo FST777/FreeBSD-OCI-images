@@ -2,16 +2,21 @@ FROM ghcr.io/freebsd/freebsd-runtime:14.3 AS builder
 
 RUN <<EOF
   umask 0022
-  pkg install -y redis FreeBSD-utilities
+  PKG="redis"
+  pkg install -y FreeBSD-utilities "${PKG}"
 
-  mkdir -p /tmp/root/etc /tmp/root/bin /tmp/root/libexec /tmp/root/var/run /tmp/root/usr/bin /tmp/root/root
+  mkdir -p /tmp/root/etc /tmp/root/libexec /tmp/root/var/run /tmp/root/root
   cp /etc/passwd /etc/master.passwd /etc/pwd.db /etc/spwd.db /etc/group /tmp/root/etc
-  cp /usr/local/bin/redis* /tmp/root/bin
   cp /libexec/ld-elf.* /tmp/root/libexec
   cp /var/run/ld-elf.so.hints /tmp/root/var/run
-  for lib in $(ldd -f '%p\n' -f '' /tmp/root/bin/redis*); do
-      mkdir -p "/tmp/root$(dirname "${lib}")"
-      cp "${lib}" "/tmp/root$(dirname "${lib}")"
+
+  for bin in $(pkg info -l "${PKG}" | grep "bin/"); do
+    mkdir -p "/tmp/root$(dirname "${bin}")"
+    cp "${bin}" "/tmp/root$(dirname "${bin}")"
+    for lib in $(ldd -f '%p\n' -f '' "${bin}"); do
+        mkdir -p "/tmp/root$(dirname "${lib}")"
+        cp "${lib}" "/tmp/root$(dirname "${lib}")"
+    done
   done
 
   mkdir -p /tmp/root/usr/local/etc /tmp/root/var/log/redis /tmp/root/data /tmp/root/tmp
@@ -44,5 +49,5 @@ COPY --from=builder /tmp/root/ /
 VOLUME /data
 WORKDIR /data
 
-EXPOSE 6397
+EXPOSE 6379
 CMD ["redis-server", "/usr/local/etc/redis.conf"]

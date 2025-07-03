@@ -7,7 +7,8 @@ the Graduated Fluentd Ecosystem and a CNCF sub-project.
 - Pull using `ghcr.io/fst777/fluent-bit:latest`
 
 # Image specific notes
-Configuration is stored at `/etc/fluent-bit/`. The binary is `/bin/fluent-bit`.
+Configuration is stored at `/usr/local/etc/fluent-bit/`. The binary is
+`/usr/local/bin/fluent-bit`.
 
 When the metrics endpoint is enabled, fluent-bit listens on port 2020. This
 port is exposed by the image.

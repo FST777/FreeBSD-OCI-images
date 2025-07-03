@@ -16,4 +16,4 @@ configuration file as the sole argument.
 
 The default data path is `/data`, which is configured to be a volume.
 
-By default, redis listens on port 6397. This port is exposed by the image.
+By default, redis listens on port 6379. This port is exposed by the image.
