@@ -20,6 +20,7 @@ echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo " >> Set up runtime as cached builder"
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 buildah from --name builder ghcr.io/freebsd/freebsd-runtime:14.3
+buildah run builder pkg upgrade -y
 buildah run builder pkg install -y FreeBSD-utilities
 buildah commit builder ghcr.io/freebsd/freebsd-runtime:14.3
 buildah rm builder
