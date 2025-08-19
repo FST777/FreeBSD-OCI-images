@@ -67,6 +67,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [build, list]
     strategy:
+      fail-fast: false
       matrix:
         container: ${{ fromJson(needs.list.outputs.containers) }}
 
