@@ -1,4 +1,4 @@
-FROM ghcr.io/freebsd/freebsd-runtime:14.3 AS builder
+FROM ghcr.io/freebsd/freebsd-runtime:14.4 AS builder
 
 RUN <<EOF
   mkdir -p /tmp/root/usr/share/keys/pkg /tmp/root/etc/pkg /tmp/root/usr/local/etc/pkg/repos
