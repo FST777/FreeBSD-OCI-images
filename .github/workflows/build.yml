@@ -36,7 +36,7 @@ jobs:
             sudo ./build-assets/build.sh "${{ matrix.architecture }}"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: ${{ matrix.architecture }}
           retention-days: 1
@@ -75,7 +75,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8.0.1
         with:
           merge-multiple: true
 
