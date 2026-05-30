@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        architecture: [x86-64, arm64]
+        architecture: [x86-64]
 
     steps:
       - uses: actions/checkout@v6.0.2
@@ -23,7 +23,7 @@ jobs:
         with:
           operating_system: freebsd
           architecture: ${{ matrix.architecture }}
-          version: 14.4
+          version: 15.0
           environment_variables: HOSTNM
           run: |
             echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
@@ -44,60 +44,3 @@ jobs:
             ./*.${{ matrix.architecture }}.tar
             ./*.${{ matrix.architecture }}.tags
             ./*.${{ matrix.architecture }}.yml
-
-  list:
-    runs-on: ubuntu-24.04
-
-    outputs:
-      containers: ${{ steps.containers.outputs.containers }}
-
-    steps:
-      - uses: actions/checkout@v6.0.2
-
-      - name: List containers
-        id: containers
-        run: |
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          echo " > List containers for the matrix"
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          cd containers
-          echo "containers=$(ls -d * | jq -R -s -c 'split("\n")[:-1]')" >> "${GITHUB_OUTPUT}"
-
-  push:
-    runs-on: ubuntu-24.04
-    needs: [build, list]
-    strategy:
-      fail-fast: false
-      matrix:
-        container: ${{ fromJson(needs.list.outputs.containers) }}
-
-    steps:
-      - uses: actions/checkout@v6.0.2
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v8.0.1
-        with:
-          merge-multiple: true
-
-      - name: Create manifest
-        id: manifest
-        run: |
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          echo " > Package manifest"
-          echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-          ./build-assets/package.sh "${{ matrix.container }}"
-
-      - name: Registry owner to lowercase
-        env:
-          GHOWNER: '${{ github.repository_owner }}'
-        run: |
-          echo "GHOWNER_LC=${GHOWNER,,}" >> "${GITHUB_ENV}"
-
-      - name: Push to GHCR
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: ${{ matrix.container }}
-          tags: ${{ steps.manifest.outputs.tags }}
-          registry: ghcr.io/${{ env.GHOWNER_LC }}
-          username: ${{ github.actor }}
-          password: ${{ github.token }}

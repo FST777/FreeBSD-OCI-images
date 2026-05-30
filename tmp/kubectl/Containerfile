@@ -1,8 +1,8 @@
-FROM ghcr.io/freebsd/freebsd-runtime:14.4 AS builder
+FROM ghcr.io/freebsd/freebsd-runtime:15.0 AS builder
 
 RUN <<EOF
   umask 0022
-  PKG="fluent-bit"
+  PKG="kubectl"
   pkg install -y FreeBSD-utilities "${PKG}"
 
   mkdir -p /tmp/root/etc /tmp/root/libexec /tmp/root/var/run /tmp/root/root
@@ -19,9 +19,7 @@ RUN <<EOF
     done
   done
 
-  mkdir -p /tmp/root/usr/local/etc/fluent-bit
-  cp -r /usr/local/etc/fluent-bit/*.conf /tmp/root/usr/local/etc/fluent-bit
-  /tmp/root/usr/local/bin/fluent-bit -J > /tmp/root/usr/local/etc/fluent-bit/schema.json
+  mkdir -p /tmp/root/.kube
 EOF
 
 
@@ -30,5 +28,6 @@ LABEL maintainer="Frans-Jan van Steenbeek <frans-jan@van-steenbeek.net>"
 
 COPY --from=builder /tmp/root/ /
 
-EXPOSE 2020
-CMD ["fluent-bit", "-c", "/usr/local/etc/fluent-bit/fluent-bit.conf"]
+ENV KUBECONFIG /.kube/config
+ENTRYPOINT ["/usr/local/bin/kubectl"]
+CMD ["--help"]

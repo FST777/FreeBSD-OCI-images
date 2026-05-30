@@ -1,4 +1,4 @@
-FROM ghcr.io/freebsd/freebsd-runtime:14.4 AS builder
+FROM ghcr.io/freebsd/freebsd-runtime:15.0 AS builder
 LABEL maintainer="Frans-Jan van Steenbeek <frans-jan@van-steenbeek.net>"
 
 RUN <<EOF

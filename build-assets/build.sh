@@ -19,10 +19,10 @@ echo -e "${LIST}"
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo " >> Set up runtime as cached builder"
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-buildah from --name builder ghcr.io/freebsd/freebsd-runtime:14.4
+buildah from --name builder ghcr.io/freebsd/freebsd-runtime:15.0
 buildah run builder pkg upgrade -y
 buildah run builder pkg install -y FreeBSD-utilities
-buildah commit builder ghcr.io/freebsd/freebsd-runtime:14.4
+buildah commit builder ghcr.io/freebsd/freebsd-runtime:15.0
 buildah rm builder
 
 # Build images in order
